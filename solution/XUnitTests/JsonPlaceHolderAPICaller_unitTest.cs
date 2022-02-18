@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 using enigma_apis.JsonPlaceHolderAPI;
+using enigma_apis.JsonPlaceHolderAPI.schemas;
 using Xunit.Abstractions;
+using System.Text.Json;
 
 namespace apiCallers.JsonPlaceHolder
 {
@@ -166,6 +168,81 @@ namespace apiCallers.JsonPlaceHolder
             }
         }
 
+        [Fact]
+        public void test_addPost_mockResponse()
+        {
+            JsonPlaceHolderAPICaller jsonPlaceHolder = new JsonPlaceHolderAPICaller();
+            jsonPlaceHolder.mockResponse = true;
+            jsonPlaceHolder.mockResponseValue = mockResponseAddPost();
+            try
+            {
+                string json = @"{""title"":""foo"",""body"":""bar"",""userId"":1}";
+                jsonPlaceHolder.addPost(new Post());
+                var respuesta = jsonPlaceHolder.response;
+                Assert.Contains("body", respuesta);
+                Assert.Contains("userId", respuesta);
+                this.output.WriteLine(respuesta);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [Fact]
+        public void test_addPost_addedItem()
+        {
+            JsonPlaceHolderAPICaller jsonPlaceHolder = new JsonPlaceHolderAPICaller();
+            try
+            {
+                Post newPost = new Post();
+                newPost.title = "Mark Text";
+                newPost.body = "this is a mark text";
+                newPost.userId = 1;
+
+                //string jsonString = JsonSerializer.Serialize(newPost);
+
+                jsonPlaceHolder.addPost(newPost);
+                var respuesta = jsonPlaceHolder.response;
+                Assert.Contains("body", respuesta);
+                Assert.Contains("userId", respuesta);
+                Assert.Contains("mark text", respuesta);
+                this.output.WriteLine(respuesta);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        [Fact]
+        public async void test_addPostAsync_mockResponse()
+        {
+            JsonPlaceHolderAPICaller jsonPlaceHolder = new JsonPlaceHolderAPICaller();
+            jsonPlaceHolder.mockResponse = true;
+            jsonPlaceHolder.mockResponseValue = mockResponseAddPost();
+
+            try
+            {
+                string json = @"{""title"":""foo"",""body"":""bar"",""userId"":1}";
+                await jsonPlaceHolder.addPostAsync(json);
+                var respuesta = jsonPlaceHolder.response;
+                Assert.Contains("body", respuesta);
+                Assert.Contains("userId", respuesta);
+                this.output.WriteLine(respuesta);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
+
         protected string getMockReponsePosts()
         {
             string response = 
@@ -190,6 +267,18 @@ namespace apiCallers.JsonPlaceHolder
                               }
                             ]
                             ";
+            return response;
+        }
+
+        protected string mockResponseAddPost()
+        {
+            string response= @"{
+              id: 101,
+              title: 'foo',
+              body: 'bar',
+              userId: 1
+            }";
+
             return response;
         }
     }

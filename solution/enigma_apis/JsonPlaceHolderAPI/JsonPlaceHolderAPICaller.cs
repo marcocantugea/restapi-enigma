@@ -44,6 +44,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
 
         public void loadRootEndPoint()
         {
+            //TODO: get uri from config json file
             this._rootEndpoint = "https://jsonplaceholder.typicode.com/";
         }
 
@@ -67,9 +68,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
 
             if (this._mockResponse)
             {
-                this._response = this._mockResponseValue;
-                if (this._mockResponseException != null) throw this._mockResponseException;
-                this._httpResponse = this._mockHttpResponse;
+                returnMockResponses();
                 return;
             }
 
@@ -90,9 +89,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
 
             if (this._mockResponse)
             {
-                this._response = this._mockResponseValue;
-                if (this._mockResponseException != null) throw this._mockResponseException;
-                this._httpResponse = this._mockHttpResponse;
+                returnMockResponses();
                 return this._mockResponseValue;
             }
 
@@ -117,9 +114,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
 
             if (this._mockResponse)
             {
-                this._response = this._mockResponseValue;
-                if (this._mockResponseException != null) throw this._mockResponseException;
-                this._httpResponse = this._mockHttpResponse;
+                returnMockResponses();
                 return;
             }
 
@@ -142,9 +137,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
 
             if (this._mockResponse)
             {
-                this._response = this._mockResponseValue;
-                if (this._mockResponseException != null) throw this._mockResponseException;
-                this._httpResponse = this._mockHttpResponse;
+                returnMockResponses();
                 return this._mockResponseValue;
             }
 
@@ -153,6 +146,62 @@ namespace enigma_apis.JsonPlaceHolderAPI
             this._response = resp.get_Content();
 
             return this._response;
+        }
+
+        public void addPost(Post Jsonbody)
+        {
+            if (string.IsNullOrEmpty(this.getRootEndPoint())) return;
+
+            string resource = this.getRootEndPoint() + "posts";
+            RestClient client = new RestClient();
+            RestRequest request = new RestRequest(resource, Method.Post);
+            //request.RequestFormat = DataFormat.Json;
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Accept", "application/json");
+            //request.AddParameter("application/json", Jsonbody, ParameterType.RequestBody);
+            request.AddJsonBody(Jsonbody);
+
+            //request.AddJsonBody(Jsonbody);
+
+            if (this._mockResponse)
+            {
+                returnMockResponses();
+                return;
+            }
+
+            var res = client.ExecutePostAsync(request).GetAwaiter().GetResult();
+
+            _response = res.get_Content();
+
+        }
+
+        public async Task<string> addPostAsync(string JsonBody)
+        {
+            if (string.IsNullOrEmpty(this.getRootEndPoint())) return "";
+            string resource = this.getRootEndPoint() + "posts";
+            RestClient client = new RestClient();
+            RestRequest request = new RestRequest(resource, Method.Post);
+            request.AddJsonBody(JsonBody);
+            if (this._mockResponse)
+            {
+                returnMockResponses();
+                return this._mockResponseValue;
+            }
+
+            var resp = await client.ExecuteAsync(request);
+
+            this._response = resp.get_Content();
+
+            return this._response;
+
+        }
+
+        protected void returnMockResponses()
+        {
+            this._response = this._mockResponseValue;
+            if (this._mockResponseException != null) throw this._mockResponseException;
+            this._httpResponse = this._mockHttpResponse;
+            
         }
     }
 }
