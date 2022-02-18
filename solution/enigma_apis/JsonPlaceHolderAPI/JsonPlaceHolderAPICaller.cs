@@ -175,17 +175,19 @@ namespace enigma_apis.JsonPlaceHolderAPI
 
         }
 
-        public async Task<string> addPostAsync(string JsonBody)
+        public async Task<string> addPostAsync(Post JsonBody)
         {
             if (string.IsNullOrEmpty(this.getRootEndPoint())) return "";
             string resource = this.getRootEndPoint() + "posts";
             RestClient client = new RestClient();
             RestRequest request = new RestRequest(resource, Method.Post);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Accept", "application/json");
             request.AddJsonBody(JsonBody);
             if (this._mockResponse)
             {
                 returnMockResponses();
-                return this._mockResponseValue;
+                return _mockResponseValue;
             }
 
             var resp = await client.ExecuteAsync(request);

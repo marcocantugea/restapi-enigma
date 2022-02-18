@@ -225,10 +225,14 @@ namespace apiCallers.JsonPlaceHolder
             jsonPlaceHolder.mockResponse = true;
             jsonPlaceHolder.mockResponseValue = mockResponseAddPost();
 
+            Post newPost = new Post();
+            newPost.title = "Mark Text";
+            newPost.body = "this is a mark text";
+            newPost.userId = 1;
+
             try
             {
-                string json = @"{""title"":""foo"",""body"":""bar"",""userId"":1}";
-                await jsonPlaceHolder.addPostAsync(json);
+                await jsonPlaceHolder.addPostAsync(newPost);
                 var respuesta = jsonPlaceHolder.response;
                 Assert.Contains("body", respuesta);
                 Assert.Contains("userId", respuesta);
@@ -241,6 +245,30 @@ namespace apiCallers.JsonPlaceHolder
 
         }
 
+        [Fact]
+        public async void test_addPostAsync_addedItem()
+        {
+            JsonPlaceHolderAPICaller jsonPlaceHolder = new JsonPlaceHolderAPICaller();
+            
+            Post newPost = new Post();
+            newPost.title = "Mark Text";
+            newPost.body = "this is a mark text";
+            newPost.userId = 1;
+
+            try
+            {
+                await jsonPlaceHolder.addPostAsync(newPost);
+                var respuesta = jsonPlaceHolder.response;
+                Assert.Contains("body", respuesta);
+                Assert.Contains("userId", respuesta);
+                this.output.WriteLine(respuesta);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
 
 
         protected string getMockReponsePosts()
