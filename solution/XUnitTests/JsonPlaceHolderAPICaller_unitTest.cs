@@ -270,6 +270,64 @@ namespace apiCallers.JsonPlaceHolder
 
         }
 
+        [Fact]
+        public void test_ModifyPost()
+        {
+            JsonPlaceHolderAPICaller jsonPlaceHolder = new JsonPlaceHolderAPICaller();
+            try
+            {
+                Post newPost = new Post();
+                newPost.title = "This is a modified title";
+                newPost.body = "this is a mark text added text to body";
+                newPost.userId = 1;
+                newPost.id = 1;
+
+                //string jsonString = JsonSerializer.Serialize(newPost);
+
+                jsonPlaceHolder.modifyPost(newPost);
+
+                var respuesta = jsonPlaceHolder.response;
+                this.output.WriteLine("item modificado");
+                this.output.WriteLine(respuesta);
+
+                Assert.Contains("This is a modified title", respuesta);
+                Assert.Contains("added text to body", respuesta);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [Fact]
+        public async void test_ModifyAsync()
+        {
+            JsonPlaceHolderAPICaller jsonPlaceHolder = new JsonPlaceHolderAPICaller();
+
+            Post newPost = new Post();
+            newPost.title = "This is a modified title";
+            newPost.body = "this is a mark text added text to body";
+            newPost.userId = 1;
+            newPost.id = 1;
+
+            try
+            {
+                var respuesta=await jsonPlaceHolder.modifyPostAsync(newPost);
+
+                this.output.WriteLine("item modificado");
+                this.output.WriteLine(respuesta);
+
+                Assert.Contains("This is a modified title", respuesta);
+                Assert.Contains("added text to body", respuesta);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
         protected string getMockReponsePosts()
         {

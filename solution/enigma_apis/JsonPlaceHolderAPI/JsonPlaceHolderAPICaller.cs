@@ -148,7 +148,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
             return this._response;
         }
 
-        public void addPost(Post Jsonbody)
+        public void addPost(Post body)
         {
             if (string.IsNullOrEmpty(this.getRootEndPoint())) return;
 
@@ -159,7 +159,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Accept", "application/json");
             //request.AddParameter("application/json", Jsonbody, ParameterType.RequestBody);
-            request.AddJsonBody(Jsonbody);
+            request.AddJsonBody(body);
 
             //request.AddJsonBody(Jsonbody);
 
@@ -175,7 +175,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
 
         }
 
-        public async Task<string> addPostAsync(Post JsonBody)
+        public async Task<string> addPostAsync(Post body)
         {
             if (string.IsNullOrEmpty(this.getRootEndPoint())) return "";
             string resource = this.getRootEndPoint() + "posts";
@@ -183,7 +183,7 @@ namespace enigma_apis.JsonPlaceHolderAPI
             RestRequest request = new RestRequest(resource, Method.Post);
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Accept", "application/json");
-            request.AddJsonBody(JsonBody);
+            request.AddJsonBody(body);
             if (this._mockResponse)
             {
                 returnMockResponses();
@@ -196,6 +196,52 @@ namespace enigma_apis.JsonPlaceHolderAPI
 
             return this._response;
 
+        }
+
+        public void modifyPost(Post body)
+        {
+            if (string.IsNullOrEmpty(this.getRootEndPoint())) return;
+            if (body.id <= 0) return;
+
+            string resource = this.getRootEndPoint() + "posts/"+body.id;
+            RestClient client = new RestClient();
+            RestRequest request = new RestRequest(resource, Method.Put);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Accept", "application/json");
+            request.AddJsonBody(body);
+            if (this._mockResponse)
+            {
+                returnMockResponses();
+                return;
+            }
+
+            var res = client.ExecutePutAsync(request).GetAwaiter().GetResult();
+
+            _response = res.get_Content();
+        }
+
+        public async Task<string> modifyPostAsync(Post body)
+        {
+            if (string.IsNullOrEmpty(this.getRootEndPoint())) return "";
+            if (body.id <= 0) return "" ;
+
+            string resource = this.getRootEndPoint() + "posts/"+body.id;
+            RestClient client = new RestClient();
+            RestRequest request = new RestRequest(resource, Method.Put);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Accept", "application/json");
+            request.AddJsonBody(body);
+            if (this._mockResponse)
+            {
+                returnMockResponses();
+                return _mockResponseValue;
+            }
+
+            var res = await client.ExecutePutAsync(request);
+
+            _response = res.get_Content();
+
+            return _response;
         }
 
         protected void returnMockResponses()
