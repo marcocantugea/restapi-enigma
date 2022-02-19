@@ -29,5 +29,27 @@ namespace enigma_core.APIs
             return response;
         }
 
+        public async Task<List<Post>> getPosts(int id = -1)
+        {
+
+            JsonPlaceHolderAPICaller apicaller = new JsonPlaceHolderAPICaller();
+
+            var respuesta="";
+
+            if (id > 0)
+            {
+                respuesta = await apicaller.getPostsAsync(id);
+            }
+            else
+            {
+                respuesta = await apicaller.getPostsAsync();
+            }
+
+            List<Post> posts = JsonSerializer.Deserialize<List<Post>>(respuesta);
+
+            return posts;
+            
+        }
+
     }
 }

@@ -8,4 +8,13 @@
     <ProjectReference Include="..\enigma_apis\enigma_apis.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validators\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
+  </ItemGroup>
+
 </Project>

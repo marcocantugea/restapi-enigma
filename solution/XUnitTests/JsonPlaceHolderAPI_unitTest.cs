@@ -39,5 +39,28 @@ namespace XUnitTests.core.JsonPlaceHolderAPI_tests
             output.WriteLine("completed: " + response.completed);
 
         }
+
+        [Fact]
+        public async void test_getPosts_all()
+        {
+            JsonPlaceHolderAPI jsonPlaceHolderAPI = new JsonPlaceHolderAPI();
+
+            try
+            {
+                List<Post> postFound = await jsonPlaceHolderAPI.getPosts();
+
+                Assert.True(postFound.Count > 1);
+
+                foreach (Post post in postFound)
+                {
+                    output.WriteLine(post.id.ToString() + " title: " + post.title + " body: "+post.body);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
