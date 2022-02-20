@@ -53,5 +53,11 @@ namespace enigma_core.Repository
             var filter = Builders<Respuesta>.Filter.Eq(s => s.Id, item.Id);
             await collection.ReplaceOneAsync(filter, item);
         }
+
+        public async Task<List<Respuesta>> getLastInsertedRespuesta()
+        {
+            return await collection.Find(bson => true).SortBy(bson => bson.Id).ThenByDescending(bson => bson.Id).ToListAsync<Respuesta>();
+
+        }
     }
 }

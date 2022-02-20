@@ -80,5 +80,29 @@ namespace XUnitTests.core.enigma_core_tests.Repositories
             //}
 
         }
+
+        [Fact]
+        public async void test_GetLasItem()
+        {
+
+            RespuestasRepository respuestasRepo = new RespuestasRepository();
+
+            Respuesta newRespuesta = new Respuesta();
+            newRespuesta.edadDesde = 15;
+            newRespuesta.edadHasta = 18;
+            newRespuesta.activa = true;
+            newRespuesta.respuesta = "Encontraras tu primer amor pronto";
+
+            await respuestasRepo.add(newRespuesta);
+
+            Respuesta resp = (await respuestasRepo.getLastInsertedRespuesta())[0];
+
+            Assert.Equal(resp.edadDesde, newRespuesta.edadDesde);
+            Assert.Equal(resp.edadHasta, newRespuesta.edadHasta);
+            Assert.Equal(resp.respuesta, newRespuesta.respuesta);
+
+            await respuestasRepo.delete(resp.Id.ToString());
+
+        }
     }
 }
