@@ -122,7 +122,7 @@ namespace enigma_core.Repository
             throw new NotImplementedException();
         }
 
-        public Task<Settings> GetItemByIdAsync(string id)
+        public Task<Settings> GetItemByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

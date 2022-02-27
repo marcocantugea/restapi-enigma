@@ -113,12 +113,49 @@ namespace enigma_core.Repository
 
         public List<User> GetAll(int limitRecords)
         {
-            throw new NotImplementedException();
+            string query = "SELECT userid, userlogin, password from usuarios limit @sql_param_limit";
+            openConnection();
+            MySqlCommand cmd = new MySqlCommand(query, connector);
+            cmd.Parameters.AddWithValue("@sql_param_limit", limitRecords);
+
+            MySqlDataReader reader = cmd.ExecuteReader();
+
+            List<User> users = new List<User>();
+            while (reader.Read())
+            {
+                User itemuser = new User();
+                itemuser.userid = reader.GetInt32(0);
+                itemuser.userlogin = reader.GetString(1);
+                itemuser.password = reader.GetString(2);
+                users.Add(itemuser);
+            }
+
+            closeConnection();
+
+            return users;
         }
 
-        public Task<List<User>> GetAllAsync(int limitRecors)
+        public async Task<List<User>> GetAllAsync(int limitRecors)
         {
-            throw new NotImplementedException();
+            string query = "SELECT userid, userlogin, password from usuarios limit @sql_param_limit";
+            await openConnectionAsync();
+            MySqlCommand cmd = new MySqlCommand(query, connector);
+            cmd.Parameters.AddWithValue("@sql_param_limit", limitRecors);
+
+            var reader = await cmd.ExecuteReaderAsync();
+
+            List<User> users = new List<User>();
+            while (reader.Read())
+            {
+                User itemuser = new User();
+                itemuser.userid = reader.GetInt32(0);
+                itemuser.userlogin = reader.GetString(1);
+                users.Add(itemuser);
+            }
+
+            await closeConnectionAsync();
+
+            return users;
         }
 
         public User GetItemById(int id)
@@ -143,7 +180,7 @@ namespace enigma_core.Repository
             return itemuser;
         }
 
-        public Task<User> GetItemByIdAsync(string id)
+        public Task<User> GetItemByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

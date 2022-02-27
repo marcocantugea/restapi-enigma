@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace enigma_restapi
 {
@@ -25,6 +28,27 @@ namespace enigma_restapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //obtener la llave secreta
+            string secreatKey = Configuration["Authentication:secretKey"];
+            string issuerAudice = Configuration["Authentication:Issuer"];
+            string audice = Configuration["Authentication:Audience"];
+
+            // realizar la seguridad simetrica
+            var SymetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secreatKey));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters {
+                        ValidateIssuer = true,
+                        ValidateAudience =true,
+                        ValidateIssuerSigningKey =true,
+                        ValidIssuer= issuerAudice,
+                        ValidAudience = audice,
+                        IssuerSigningKey= SymetricKey
+                    };
+                }); 
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -39,7 +63,7 @@ namespace enigma_restapi
             {
                 app.UseHsts();
             }
-
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
         }

@@ -16,7 +16,7 @@ namespace enigma_core.Interfaces
         List<T> GetAll(int limitRecords);
         Task<List<T>> GetAllAsync(int limitRecors);
         T GetItemById(int id);
-        Task<T> GetItemByIdAsync(string id);
+        Task<T> GetItemByIdAsync(int id);
         List<T> Find(List<Object> paremeters);
         Task<List<T>> FindAsync(List<Object> paremeters);
     }

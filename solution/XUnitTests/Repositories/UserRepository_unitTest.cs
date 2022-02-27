@@ -29,5 +29,17 @@ namespace XUnitTests.Repositories.enigma_core_tests.Repositories
 
             Assert.Equal("marco", userfound.userlogin);
         }
+
+        [Fact]
+        public async void test_getAllUsers_getusers()
+        {
+            UserRepository repo = new UserRepository();
+
+            List<User> users = await repo.GetAllAsync(10);
+
+            Assert.True(users.Count > 0);
+
+        }
     }
+    
 }
