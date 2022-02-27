@@ -8,5 +8,7 @@ namespace enigma_core.Interfaces
     {
         string getRepositoryTable();
         string getIdTable();
+        string getSQLparamId();
+        int getIdValue();
     }
 }

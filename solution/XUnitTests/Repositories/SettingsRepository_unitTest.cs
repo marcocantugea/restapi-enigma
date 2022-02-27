@@ -86,6 +86,40 @@ namespace XUnitTests.enigma_core_tests.Repositories
             await settingRepo.AddAsync(newSetting);
         }
 
+        [Fact]
+        public void test_update_UpdateItem()
+        {
+            SettingsRepository settingRepo = new SettingsRepository();
+            Settings updateSetting = new Settings();
+            updateSetting.details = "dato actualizado del detalle";
+            settingRepo.Update(23, updateSetting);
+
+        }
+
+        [Fact]
+        public async void test_update_UpdateItemAsync()
+        {
+            SettingsRepository settingRepo = new SettingsRepository();
+            Settings updateSetting = new Settings();
+            updateSetting.details = "dato actualizado del detalle async";
+            await settingRepo.UpdateAsync(23, updateSetting);
+
+        }
+
+        [Fact]
+        public void test_delete_deleteRecord()
+        {
+            SettingsRepository settingRepo = new SettingsRepository();
+            settingRepo.Detelete(24);
+        }
+
+        [Fact]
+        public async void test_deleteAsync_deleteRecord()
+        {
+            SettingsRepository settingRepo = new SettingsRepository();
+            await settingRepo.DeleteAsync(23);
+        }
+
         private static T Cast<T>(T typeHolder, Object x)
         {
             // typeHolder above is just for compiler magic

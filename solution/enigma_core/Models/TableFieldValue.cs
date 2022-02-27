@@ -9,10 +9,10 @@ namespace enigma_core.Models
     public class TableFieldValue : IMysqlEntityModels
     {
         public string Field { get => _field; set => _field=value; }
-        public string Value { get => _value; set => _value = value; }
+        public object Value { get => _value; set => _value =value; }
         public FieldTypes Type { get => _type; set => _type=value; }
         private string _field { set; get; }
-        private string _value { set; get; }
+        private object _value { set; get; }
         private string _valueSqlParam { set; get; }
         private FieldTypes _type { set; get; }
         private string _idTable;
@@ -23,7 +23,7 @@ namespace enigma_core.Models
             return this;
         }
 
-        public IMysqlEntityModels addValue(string value)
+        public IMysqlEntityModels addValue(object value)
         {
             _value = value;
             return this;

@@ -8,11 +8,11 @@ namespace enigma_core.Interfaces
     public interface IMysqlEntityModels
     {
         string Field{set;get;}
-        string Value { set; get; }
+        object Value { set; get; }
         FieldTypes Type { set; get; }
 
         IMysqlEntityModels addField(string field);
-        IMysqlEntityModels addValue(string value);
+        IMysqlEntityModels addValue(object value);
         IMysqlEntityModels setType(FieldTypes type);
         string getValueSqlParam();
         IMysqlEntityModels setId(string id);

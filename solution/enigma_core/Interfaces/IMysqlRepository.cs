@@ -10,7 +10,7 @@ namespace enigma_core.Interfaces
         T Add(T item);
         Task<T> AddAsync(T item);
         T Update(int id, T item);
-        Task UpdateAsync(int id,T item);
+        Task<T> UpdateAsync(int id,T item);
         void Detelete(int id);
         Task DeleteAsync(int id);
         List<T> GetAll(int limitRecords);

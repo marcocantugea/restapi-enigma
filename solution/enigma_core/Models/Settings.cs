@@ -27,5 +27,15 @@ namespace enigma_core.Models
         {
             return _repositoryTable;
         }
+
+        public string getSQLparamId()
+        {
+            return "@sql_Param_id";
+        }
+
+        public int getIdValue()
+        {
+            return id;
+        }
     }
 }

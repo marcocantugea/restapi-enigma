@@ -2,28 +2,33 @@
 using System.Collections.Generic;
 using System.Text;
 using enigma_core.Models;
-using enigma_core.Database;
 using enigma_core.Interfaces;
+using enigma_core.Database;
 using System.Threading.Tasks;
-using System.Reflection;
-using MySql.Data.MySqlClient;
 using enigma_core.Models.Helpers;
+using MySql.Data.MySqlClient;
 
 namespace enigma_core.Repository
 {
-    public class SettingsRepository : ClientMysql, IMysqlRepository<Settings>
+    public class UserRepository : ClientMysql, IMysqlRepository<User>
     {
-        private string repositoryTable = "settings";
+        public void SetSettingsDb()
+        {
+            server = "localhost";
+            db = "erpsistema";
+            user = "root";
+            password = "root";
+            createConnection();
+        }
 
-        public SettingsRepository()
+        public UserRepository()
         {
             SetSettingsDb();
         }
 
-        public Settings Add(Settings item)
+        public User Add(User item)
         {
-
-            TableFieldsHelper<Settings> tablehelper = new TableFieldsHelper<Settings>();
+            TableFieldsHelper<User> tablehelper = new TableFieldsHelper<User>();
             List<TableFieldValue> InsertFieldsAndValues = tablehelper.getFieldsValues(item);
 
             string query = tablehelper.getInsertQuery(item);
@@ -31,7 +36,7 @@ namespace enigma_core.Repository
             openConnection();
             MySqlCommand cmd = new MySqlCommand(query, connector);
             foreach (TableFieldValue obj in InsertFieldsAndValues)
-            { 
+            {
                 cmd.Parameters.AddWithValue(obj.getValueSqlParam(), obj.Value);
             }
 
@@ -41,9 +46,9 @@ namespace enigma_core.Repository
             return item;
         }
 
-        public async Task<Settings> AddAsync(Settings item)
+        public async Task<User> AddAsync(User item)
         {
-            TableFieldsHelper<Settings> tablehelper = new TableFieldsHelper<Settings>();
+            TableFieldsHelper<User> tablehelper = new TableFieldsHelper<User>();
             List<TableFieldValue> InsertFieldsAndValues = tablehelper.getFieldsValues(item);
 
             string query = tablehelper.getInsertQuery(item);
@@ -65,16 +70,16 @@ namespace enigma_core.Repository
         public async Task DeleteAsync(int id)
         {
             if (id <= 0) throw new Exception("id is invalid");
-            Settings deleteSetting = new Settings();
-            deleteSetting.id = id;
+            User deleteUser = new User();
+            deleteUser.userid= id;
 
-            TableFieldsHelper<Settings> tablehelper = new TableFieldsHelper<Settings>();
-            List<TableFieldValue> InsertFieldsAndValues = tablehelper.getFieldsValues(deleteSetting);
+            TableFieldsHelper<User> tablehelper = new TableFieldsHelper<User>();
+            List<TableFieldValue> InsertFieldsAndValues = tablehelper.getFieldsValues(deleteUser);
 
-            string query = tablehelper.getDeleteQuery(deleteSetting);
+            string query = tablehelper.getDeleteQuery(deleteUser);
             await openConnectionAsync();
             MySqlCommand cmd = new MySqlCommand(query, connector);
-            cmd.Parameters.AddWithValue(deleteSetting.getSQLparamId(), id);
+            cmd.Parameters.AddWithValue(deleteUser.getSQLparamId(), id);
             await cmd.ExecuteNonQueryAsync();
             await closeConnectionAsync();
         }
@@ -82,70 +87,77 @@ namespace enigma_core.Repository
         public void Detelete(int id)
         {
             if (id <= 0) throw new Exception("id is invalid");
-            Settings deleteSetting = new Settings();
-            deleteSetting.id = id;
+            User deleteUser = new User();
+            deleteUser.userid = id;
 
-            TableFieldsHelper<Settings> tablehelper = new TableFieldsHelper<Settings>();
-            List<TableFieldValue> InsertFieldsAndValues = tablehelper.getFieldsValues(deleteSetting);
+            TableFieldsHelper<User> tablehelper = new TableFieldsHelper<User>();
+            List<TableFieldValue> InsertFieldsAndValues = tablehelper.getFieldsValues(deleteUser);
 
-            string query = tablehelper.getDeleteQuery(deleteSetting);
+            string query = tablehelper.getDeleteQuery(deleteUser);
             openConnection();
             MySqlCommand cmd = new MySqlCommand(query, connector);
-            cmd.Parameters.AddWithValue(deleteSetting.getSQLparamId(), id);
+            cmd.Parameters.AddWithValue(deleteUser.getSQLparamId(), id);
             cmd.ExecuteNonQuery();
             closeConnection();
-
         }
 
-        public List<Settings> Find(List<object> paremeters)
+        public List<User> Find(List<object> paremeters)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Settings>> FindAsync(List<object> paremeters)
+        public Task<List<User>> FindAsync(List<object> paremeters)
         {
             throw new NotImplementedException();
         }
 
-        public List<Settings> GetAll(int limitRecords)
+        public List<User> GetAll(int limitRecords)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Settings>> GetAllAsync(int limitRecors)
+        public Task<List<User>> GetAllAsync(int limitRecors)
         {
             throw new NotImplementedException();
         }
 
-        public Settings GetItemById(int id)
+        public User GetItemById(int id)
+        {
+            string query = "SELECT userid, userlogin, password from usuarios where userid=@sql_param_userid"; 
+            openConnection();
+            MySqlCommand cmd = new MySqlCommand(query, connector);
+            cmd.Parameters.AddWithValue("@sql_param_userid", id);
+
+            MySqlDataReader reader = cmd.ExecuteReader();
+
+            User itemuser = new User();
+            while (reader.Read())
+            {
+                itemuser.userid = reader.GetInt32(0);
+                itemuser.userlogin = reader.GetString(1);
+                itemuser.password = reader.GetString(2);
+            }
+
+            closeConnection();
+
+            return itemuser;
+        }
+
+        public Task<User> GetItemByIdAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Settings> GetItemByIdAsync(string id)
+        public User Update(int id, User item)
         {
-            throw new NotImplementedException();
-        }
-
-        public void SetSettingsDb()
-        {
-            server = "localhost";
-            db = "cunimed";
-            user = "root";
-            password = "root";
-            createConnection();
-        }
-
-        public Settings Update(int id, Settings item)
-        {
-            TableFieldsHelper<Settings> tablehelper = new TableFieldsHelper<Settings>();
+            TableFieldsHelper<User> tablehelper = new TableFieldsHelper<User>();
             List<TableFieldValue> InsertFieldsAndValues = tablehelper.getFieldsValues(item);
 
-            string query = tablehelper.getUpdateQuery(id,item);
+            string query = tablehelper.getUpdateQuery(id, item);
 
             openConnection();
             MySqlCommand cmd = new MySqlCommand(query, connector);
-            cmd.Parameters.AddWithValue(item.getSQLparamId(),id);
+            cmd.Parameters.AddWithValue(item.getSQLparamId(), id);
             foreach (TableFieldValue obj in InsertFieldsAndValues)
             {
                 if (obj.Field == item.getIdTable()) continue;
@@ -156,13 +168,13 @@ namespace enigma_core.Repository
 
             closeConnection();
 
-            item.id = id;
+            item.userid = id;
             return item;
         }
 
-        public async Task<Settings> UpdateAsync(int id, Settings item)
+        public async Task<User> UpdateAsync(int id, User item)
         {
-            TableFieldsHelper<Settings> tablehelper = new TableFieldsHelper<Settings>();
+            TableFieldsHelper<User> tablehelper = new TableFieldsHelper<User>();
             List<TableFieldValue> InsertFieldsAndValues = tablehelper.getFieldsValues(item);
 
             string query = tablehelper.getUpdateQuery(id, item);
@@ -180,15 +192,8 @@ namespace enigma_core.Repository
 
             await closeConnectionAsync();
 
-            item.id = id;
+            item.userid = id;
             return item;
-        }
-
-        private static T Cast<T>(T typeHolder, Object x)
-        {
-            // typeHolder above is just for compiler magic
-            // to infer the type to cast x to
-            return (T)x;
         }
     }
 }

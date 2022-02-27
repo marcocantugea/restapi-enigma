@@ -16,9 +16,9 @@ namespace enigma_core.Models.Helpers
             List<TableFieldValue> InsertFildsAndValues = new List<TableFieldValue>();
             foreach (PropertyInfo pi in item.GetType().GetProperties())
             {
-                var valueInModel = pi.GetValue(item, null)?.ToString();
+                var valueInModel = pi.GetValue(item, null);
                 if (valueInModel == null) continue;
-                if (valueInModel == "-1") continue;
+                //if (valueInModel == -1) continue;
                 TableFieldValue obj = new TableFieldValue();
                 obj.addField(pi.Name);
                 obj.addValue(valueInModel);
@@ -42,6 +42,7 @@ namespace enigma_core.Models.Helpers
             int index = 0;
             foreach (TableFieldValue obj in InsertFildsAndValues)
             {
+                if (obj.Field == item.getIdTable()) continue;
 
                 fields += (index > 0) ? "," : "";
                 valuesSqlParams += (index > 0) ? "," : "";
@@ -65,8 +66,8 @@ namespace enigma_core.Models.Helpers
             if (InsertFildsAndValues.Count <= 0) throw new Exception("no values to insert");
 
             //construimos los campos a insertar y los valores a insertar
-            string fields = "(";
-            string valuesSqlParams = "(";
+            string fields = "";
+            string valuesSqlParams = "";
             int index = 0;
             foreach (TableFieldValue obj in InsertFildsAndValues)
             {
@@ -76,13 +77,19 @@ namespace enigma_core.Models.Helpers
                 index++;
             }
 
-            fields += ")";
-            valuesSqlParams += ")";
+            fields += "";
+            valuesSqlParams += "";
 
             string query = "UPDATE " + item.getRepositoryTable() + " SET " + fields + " WHERE " + item.getIdTable() + "= @sql_Param_"+ item.getIdTable();
 
             return query;
         }
 
+        public string getDeleteQuery(IMysqlModel item)
+        {
+            if (item.getIdValue() == -1) throw new Exception("id value is empty");
+            string query = "DELETE FROM " + item.getRepositoryTable() + " WHERE " + item.getIdTable() + "= "+ item.getSQLparamId()+";";
+            return query;
+        }
     }
 }
