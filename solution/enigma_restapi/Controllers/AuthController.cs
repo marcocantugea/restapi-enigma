@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using enigma_restapi.Services;
+using enigma_core.Models;
+using enigma_core.Services;
 
 namespace enigma_restapi.Controllers
 {
@@ -25,8 +27,19 @@ namespace enigma_restapi.Controllers
         }
 
         [HttpPost("token")]
-        public async Task<IActionResult> getToken()
+        public async Task<IActionResult> getToken([FromBody]User model )
         {
+
+            UserService userService = new UserService();
+
+            User logedUser = await userService.loginUserAsync(model);
+
+            if (logedUser == null)
+            {
+                return Unauthorized();
+            }
+
+
             //obtener la llave secreta
             string secreatKey = Configuration["Authentication:secretKey"];
             string issuerAudice = Configuration["Authentication:Issuer"];
@@ -39,7 +52,18 @@ namespace enigma_restapi.Controllers
             var signingCredentials = new SigningCredentials(SymetricKey, SecurityAlgorithms.HmacSha256Signature);
 
             //obenemos los roles
-            List<Claim> roles = (new ClamisRoles()).rolesDeAcceso();
+            List<Claim> roles = new List<Claim>();
+
+
+            if (logedUser.rol == null) {
+                Claim rol = (new ClamisRoles()).RolVisitor();
+                roles.Add(rol);
+            }
+            else
+            {
+                Claim rol = (new ClamisRoles()).getRol(logedUser.rol);
+                roles.Add(rol);
+            }
 
             //creamos token
             var Token = new JwtSecurityToken(

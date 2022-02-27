@@ -26,5 +26,10 @@ namespace enigma_core.Services
             return await userRepository.GetAllAsync(limitrecords);
         }
 
+        public async Task<User> loginUserAsync(User item)
+        {
+            return await userRepository.loginUserAsync(item);
+        }
+
     }
 }

@@ -232,5 +232,31 @@ namespace enigma_core.Repository
             item.userid = id;
             return item;
         }
+
+
+        public async Task<User> loginUserAsync(User item)
+        {
+            string query = "SELECT userid, userlogin, password,rol from usuarios where userlogin=@sql_param_userlogin and password=md5(@sql_param_password)";
+            await openConnectionAsync();
+            MySqlCommand cmd = new MySqlCommand(query, connector);
+            cmd.Parameters.AddWithValue("@sql_param_userlogin", item.userlogin);
+            cmd.Parameters.AddWithValue("@sql_param_password", item.password);
+
+            var reader = await cmd.ExecuteReaderAsync();
+
+            User itemuser = null;
+            while (reader.Read())
+            {
+                itemuser = new User();
+                itemuser.userid = reader.GetInt32(0);
+                itemuser.userlogin = reader.GetString(1);
+                itemuser.password = reader.GetString(2);
+                itemuser.rol = reader.GetString(3);
+            }
+
+            await closeConnectionAsync();
+
+            return itemuser;
+        }
     }
 }

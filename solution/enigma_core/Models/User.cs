@@ -10,6 +10,7 @@ namespace enigma_core.Models
         public string userlogin { get; set; }
         public int userid { get; set; } = -1;
         public string password { get; set; }
+        public string rol { get; set; }
 
         public string getIdTable()
         {

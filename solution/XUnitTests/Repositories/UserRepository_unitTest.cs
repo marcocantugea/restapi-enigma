@@ -40,6 +40,36 @@ namespace XUnitTests.Repositories.enigma_core_tests.Repositories
             Assert.True(users.Count > 0);
 
         }
+
+        [Fact]
+        public async void test_loginUserAsync_loginFail()
+        {
+            UserRepository repo = new UserRepository();
+
+            User loginSettings = new User();
+            loginSettings.userlogin = "marcocantugea";
+            loginSettings.password = "thisisthepassword";
+
+            User userlogin = await repo.loginUserAsync(loginSettings);
+
+            Assert.Null(userlogin);
+
+        }
+
+        [Fact]
+        public async void test_loginUserAsync_loginSuccess()
+        {
+            UserRepository repo = new UserRepository();
+
+            User loginSettings = new User();
+            loginSettings.userlogin = "marco";
+            loginSettings.password = "koko";
+
+            User userlogin = await repo.loginUserAsync(loginSettings);
+
+            Assert.NotNull(userlogin);
+
+        }
     }
     
 }
